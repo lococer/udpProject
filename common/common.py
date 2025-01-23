@@ -156,6 +156,14 @@ def getId(data: bytes) -> int:
     return BtoInt(data[0:4])
 
 
+def getSize(data: bytes) -> int:
+    return BtoInt(data[16:20])
+
+
+def getData(data: bytes) -> str:
+    return data[20:20 + getSize(data)].decode('utf-8')
+
+
 def sendUdpTo(mySocket: socket, ip: str, port: int, frameBytes: bytes):
     '''
     使用mySocket发送UDP到ip:port

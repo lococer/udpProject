@@ -69,12 +69,12 @@ def send_with_timeout(client_socket,
     for i in range(len(encodeData)):
         retries = 0
         while retries < max_retries:
-            print(f"传输 {i}")
+            # print(f"传输 {i}")
             common.sendUdpTo(client_socket, server_ip, server_port,
                              encodeData[i])
             try:
                 response, _ = client_socket.recvfrom(10240)  # 尝试接收响应
-                print(f"收到响应: {response}")
+                # print(f"收到响应: {response}")
                 break  # 成功接收到响应，跳出重试循环
             except socket.timeout:
                 print(f"超时，正在重试 {retries + 1}/{max_retries}")
@@ -87,7 +87,7 @@ def send_with_timeout(client_socket,
 # 示例使用
 if __name__ == "__main__":
 
-    data = readFile("./client/bible.txt", 800 + 600)
+    data = readFile("./client/bible.txt", 1200)
     # print(data)
     encodeData = common.myEncodeData(random.randint(0, 1000), common.DATA,
                                      data)
@@ -114,6 +114,7 @@ if __name__ == "__main__":
     encodeData = common.myEncodeData(transmitId, common.DATA, data)
 
     print(f"总大小:{len(encodeData)},正在传输...")
+    print(f"第一帧大小:{len(encodeData[0])}")
 
     # 调用发送函数
     send_with_timeout(client_socket, server_ip, server_port, encodeData)
