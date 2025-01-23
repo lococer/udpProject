@@ -1,6 +1,6 @@
 import socket
 import random
-from ..common import common
+from common import common
 
 server_ip = "0.0.0.0"  # 服务器的 IP 地址
 server_port = 12345  # 服务器的端口号
@@ -20,10 +20,30 @@ def udp_listen():
                 10240)  # 假设接收的数据不超过 10240 字节
 
             requestCode = common.getRequestCode(data)
-            if (requestCode == 1):
+            if (requestCode == 1):  #建立连接
                 newId = random.randint(0, common.MAXID)
                 while newId in activateId:
                     newId = random.randint(0, common.MAXID)
+                activateId.add(newId)
+                print(f"创建新传输编号{newId}")
+                print(address)
+                allowedFrame = common.myEncode(newId, common.ALLOW)
+                common.sendUdpTo(server_socket, address[0], address[1],
+                                 allowedFrame)
+            elif requestCode == 4:
+                id = common.getId(data)
+                # if id not in activateId:
+                #     print("not allowed")
+                # else:
+                #     print("allowed")
+
+                # print(common.getData(data))
+                with open("./server/received.txt", "a") as f:
+                    f.write(common.getData(data))
+
+                ackFrame = common.myEncode(id, common.ACK)
+                common.sendUdpTo(server_socket, address[0], address[1],
+                                 ackFrame)
 
     except KeyboardInterrupt:
         print("服务器已关闭")
@@ -66,4 +86,5 @@ def udp_server(server_ip, server_port):
 
 # 示例使用
 if __name__ == "__main__":
-    udp_server(server_ip, server_port)
+    # udp_server(server_ip, server_port)
+    udp_listen()

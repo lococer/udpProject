@@ -141,8 +141,19 @@ def verifyCheckCode(data):
     return calculateCheckCode(data) == checkCode
 
 
+def BtoInt(bytes: bytes) -> int:
+    '''
+    将4B转为int
+    '''
+    return int.from_bytes(bytes, 'little')
+
+
 def getRequestCode(data: bytes) -> bytes:
-    return data[4, 8]
+    return BtoInt(data[4:8])
+
+
+def getId(data: bytes) -> int:
+    return BtoInt(data[0:4])
 
 
 def sendUdpTo(mySocket: socket, ip: str, port: int, frameBytes: bytes):
